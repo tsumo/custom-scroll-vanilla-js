@@ -1,0 +1,33 @@
+body {
+  margin: 0;
+  user-select: none;
+  background-color: darkseagreen;
+}
+
+.content {
+  position: fixed;
+}
+
+p {
+  font-size: 20px;
+  margin: 0;
+  padding: 5px 20px 5px 10px;
+}
+
+a {
+  color: darkgreen;
+}
+
+.scrollbar {
+  position: fixed;
+  background-color: yellowgreen;
+  width: 10px;
+  height: 100%;
+  right: 0;
+}
+
+.scroll {
+  position: fixed;
+  background-color: darkgreen;
+  width: 10px;
+}
