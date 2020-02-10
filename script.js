@@ -29,7 +29,7 @@ const adjustContent = () => {
   content.style.transform = `translateY(-${contentOffset}px)`;
 };
 
-const calculateScrollSize = () => {
+const resizeListener = () => {
   contentHeight = content.getBoundingClientRect().height;
   windowHeight = window.innerHeight;
   scrollSizePercent = 1 / (contentHeight / windowHeight);
@@ -38,27 +38,23 @@ const calculateScrollSize = () => {
   moveScroll(scrollPosPx);
   adjustContent();
 };
-calculateScrollSize();
+resizeListener();
 
-window.addEventListener("resize", calculateScrollSize);
+window.addEventListener("resize", resizeListener);
 
 const dragStart = e => {
-  // console.log("start drag");
   scrollDragOffsetPx = e.layerY;
   document.addEventListener("mousemove", dragging);
   document.addEventListener("mouseup", dragEnd, { once: true });
 };
 
 const dragging = e => {
-  // console.log("dragging");
   moveScroll(e.clientY);
   adjustContent();
   scrollPosPx = e.clientY;
 };
 
 const dragEnd = () => {
-  // console.log("end drag");
-  scrollDragOffsetPx = 0;
   document.removeEventListener("mousemove", dragging);
 };
 
