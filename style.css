@@ -21,15 +21,15 @@ a {
   color: darkgreen;
 }
 
-.scrollbar {
+.info {
   position: fixed;
-  background-color: yellowgreen;
-  width: 10px;
-  height: 100%;
-  right: 0;
+  right: 10px;
+  background-color: darkolivegreen;
+  width: 350px;
 }
 
 .scroll {
+  right: 0;
   position: fixed;
   background-color: darkgreen;
   width: 10px;

@@ -4,6 +4,8 @@ const content = document.querySelector(".content");
 
 const scroll = document.querySelector(".scroll");
 
+const infoTable = document.querySelector(".info");
+
 let contentHeight = 0;
 let windowHeight = 0;
 
@@ -18,6 +20,19 @@ let scrollDragOffsetPx = 0;
 let wheelScrollStep = 25;
 let arrowKeyScrollStep = 12.5;
 let pageKeyScrollCoef = 0.9;
+
+const updateInfoTable = () => {
+  infoTable.innerHTML = `
+  <tr><td>contentHeight</td><td>${contentHeight}</td></tr>
+  <tr><td>windowHeight</td><td>${windowHeight}</td></tr>
+  <tr><td>scrollSizePercent</td><td>${scrollSizePercent}</td></tr>
+  <tr><td>scrollSizePx</td><td>${scrollSizePx}</td></tr>
+  <tr><td>scrollPosPercent</td><td>${scrollPosPercent}</td></tr>
+  <tr><td>scrollPosPx</td><td>${scrollPosPx}</td></tr>
+  <tr><td>scrollDragOffsetPx</td><td>${scrollDragOffsetPx}</td></tr>
+  `;
+};
+setInterval(updateInfoTable, 100);
 
 const clampScroll = n => Math.min(windowHeight - scrollSizePx, Math.max(0, n));
 
