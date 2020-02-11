@@ -15,6 +15,10 @@ let scrollPosPx = 0;
 
 let scrollDragOffsetPx = 0;
 
+let wheelScrollStep = 25;
+let arrowKeyScrollStep = 12.5;
+let pageKeyScrollCoef = 0.9;
+
 const clampScroll = n => Math.min(windowHeight - scrollSizePx, Math.max(0, n));
 
 const moveScroll = newScrollPosPx => {
@@ -57,3 +61,33 @@ const dragEnd = () => {
 };
 
 scroll.addEventListener("mousedown", dragStart);
+
+const wheelListener = e => {
+  const newScrollPosPx = scrollPosPx + e.deltaY * wheelScrollStep;
+  moveScroll(newScrollPosPx);
+};
+
+document.addEventListener("wheel", wheelListener);
+
+const keydownListener = e => {
+  let newScrollPosPx;
+  switch (event.key) {
+    case "Up":
+    case "ArrowUp":
+      newScrollPosPx = scrollPosPx - arrowKeyScrollStep;
+      break;
+    case "Down":
+    case "ArrowDown":
+      newScrollPosPx = scrollPosPx + arrowKeyScrollStep;
+      break;
+    case "PageUp":
+      newScrollPosPx = scrollPosPx - scrollSizePx * pageKeyScrollCoef;
+      break;
+    case "PageDown":
+      newScrollPosPx = scrollPosPx + scrollSizePx * pageKeyScrollCoef;
+      break;
+  }
+  moveScroll(newScrollPosPx);
+};
+
+window.addEventListener("keydown", keydownListener);
