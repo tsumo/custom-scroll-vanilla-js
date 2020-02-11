@@ -63,7 +63,8 @@ const dragEnd = () => {
 scroll.addEventListener("mousedown", dragStart);
 
 const wheelListener = e => {
-  const newScrollPosPx = scrollPosPx + e.deltaY * wheelScrollStep;
+  const direction = Math.sign(e.deltaY);
+  const newScrollPosPx = scrollPosPx + direction * wheelScrollStep;
   moveScroll(newScrollPosPx);
 };
 
