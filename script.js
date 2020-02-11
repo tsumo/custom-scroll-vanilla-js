@@ -9,13 +9,13 @@ const infoTable = document.querySelector(".info");
 let contentHeight = 0;
 let windowHeight = 0;
 
-let scrollSizePercent = 0;
-let scrollSizePx = 0;
+let sizePercent = 0;
+let sizePx = 0;
 
-let scrollPosPercent = 0;
-let scrollPosPx = 0;
+let posPercent = 0;
+let posPx = 0;
 
-let scrollDragOffsetPx = 0;
+let dragOffsetPx = 0;
 
 let wheelScrollStep = 25;
 let arrowKeyScrollStep = 12.5;
@@ -25,24 +25,24 @@ const updateInfoTable = () => {
   infoTable.innerHTML = `
   <tr><td>contentHeight</td><td>${contentHeight}</td></tr>
   <tr><td>windowHeight</td><td>${windowHeight}</td></tr>
-  <tr><td>scrollSizePercent</td><td>${scrollSizePercent}</td></tr>
-  <tr><td>scrollSizePx</td><td>${scrollSizePx}</td></tr>
-  <tr><td>scrollPosPercent</td><td>${scrollPosPercent}</td></tr>
-  <tr><td>scrollPosPx</td><td>${scrollPosPx}</td></tr>
-  <tr><td>scrollDragOffsetPx</td><td>${scrollDragOffsetPx}</td></tr>
+  <tr><td>sizePercent</td><td>${sizePercent}</td></tr>
+  <tr><td>sizePx</td><td>${sizePx}</td></tr>
+  <tr><td>posPercent</td><td>${posPercent}</td></tr>
+  <tr><td>posPx</td><td>${posPx}</td></tr>
+  <tr><td>dragOffsetPx</td><td>${dragOffsetPx}</td></tr>
   `;
 };
 setInterval(updateInfoTable, 100);
 
-const clampScroll = n => Math.min(windowHeight - scrollSizePx, Math.max(0, n));
+const clampScrollPos = pos => Math.min(windowHeight - sizePx, Math.max(0, pos));
 
-const moveScroll = newScrollPosPx => {
-  const clampedPosPx = clampScroll(newScrollPosPx);
-  scrollPosPercent = clampedPosPx / (windowHeight - scrollSizePx);
+const moveScroll = newPosPx => {
+  const clampedPosPx = clampScrollPos(newPosPx);
+  posPercent = clampedPosPx / (windowHeight - sizePx);
   scroll.style.top = `${clampedPosPx}px`;
-  scrollPosPx = clampedPosPx;
+  posPx = clampedPosPx;
   // Adjust content
-  const contentOffset = scrollPosPercent * (contentHeight - windowHeight);
+  const contentOffset = posPercent * (contentHeight - windowHeight);
   content.style.transform = `translateY(-${contentOffset}px)`;
 };
 
@@ -50,11 +50,11 @@ const resizeListener = () => {
   contentHeight = content.getBoundingClientRect().height;
   windowHeight = window.innerHeight;
   // Scroll size cannot be more than 1
-  scrollSizePercent = Math.min(1, 1 / (contentHeight / windowHeight));
-  scrollSizePx = windowHeight * scrollSizePercent;
-  scroll.style.height = `${scrollSizePx}px`;
+  sizePercent = Math.min(1, 1 / (contentHeight / windowHeight));
+  sizePx = windowHeight * sizePercent;
+  scroll.style.height = `${sizePx}px`;
   // Readjust scroll position
-  moveScroll(scrollPosPx);
+  moveScroll(posPx);
 };
 resizeListener();
 
@@ -67,12 +67,12 @@ const dragStart = e => {
 };
 
 const dragging = e => {
-  const newScrollPosPx = e.clientY - scrollDragOffsetPx;
-  moveScroll(newScrollPosPx);
+  const newPosPx = e.clientY - dragOffsetPx;
+  moveScroll(newPosPx);
 };
 
 const dragEnd = () => {
-  scrollDragOffsetPx = 0;
+  dragOffsetPx = 0;
   document.removeEventListener("mousemove", dragging);
 };
 
@@ -80,31 +80,31 @@ scroll.addEventListener("mousedown", dragStart);
 
 const wheelListener = e => {
   const direction = Math.sign(e.deltaY);
-  const newScrollPosPx = scrollPosPx + direction * wheelScrollStep;
-  moveScroll(newScrollPosPx);
+  const newPosPx = posPx + direction * wheelScrollStep;
+  moveScroll(newPosPx);
 };
 
 document.addEventListener("wheel", wheelListener);
 
 const keydownListener = e => {
-  let newScrollPosPx = scrollPosPx;
-  switch (event.key) {
+  let newPosPx = posPx;
+  switch (e.key) {
     case "Up":
     case "ArrowUp":
-      newScrollPosPx -= arrowKeyScrollStep;
+      newPosPx -= arrowKeyScrollStep;
       break;
     case "Down":
     case "ArrowDown":
-      newScrollPosPx += arrowKeyScrollStep;
+      newPosPx += arrowKeyScrollStep;
       break;
     case "PageUp":
-      newScrollPosPx -= scrollSizePx * pageKeyScrollCoef;
+      newPosPx -= sizePx * pageKeyScrollCoef;
       break;
     case "PageDown":
-      newScrollPosPx += scrollSizePx * pageKeyScrollCoef;
+      newPosPx += sizePx * pageKeyScrollCoef;
       break;
   }
-  moveScroll(newScrollPosPx);
+  moveScroll(newPosPx);
 };
 
 window.addEventListener("keydown", keydownListener);
