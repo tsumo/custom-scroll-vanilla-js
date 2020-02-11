@@ -1,7 +1,10 @@
 body {
   margin: 0;
-  user-select: none;
   background-color: darkseagreen;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
 }
 
 .content {

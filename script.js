@@ -15,16 +15,14 @@ let scrollPosPx = 0;
 
 let scrollDragOffsetPx = 0;
 
-const moveScroll = n => {
-  const scrollOffset = Math.min(
-    windowHeight - scrollSizePx,
-    Math.max(0, n - scrollDragOffsetPx)
-  );
-  scrollPosPercent = scrollOffset / (windowHeight - scrollSizePx);
-  scroll.style.top = `${scrollOffset}px`;
-};
+const clampScroll = n => Math.min(windowHeight - scrollSizePx, Math.max(0, n));
 
-const adjustContent = () => {
+const moveScroll = newScrollPosPx => {
+  const clampedPosPx = clampScroll(newScrollPosPx);
+  scrollPosPercent = clampedPosPx / (windowHeight - scrollSizePx);
+  scroll.style.top = `${clampedPosPx}px`;
+  scrollPosPx = clampedPosPx;
+  // Adjust content
   const contentOffset = scrollPosPercent * (contentHeight - windowHeight);
   content.style.transform = `translateY(-${contentOffset}px)`;
 };
@@ -35,8 +33,8 @@ const resizeListener = () => {
   scrollSizePercent = 1 / (contentHeight / windowHeight);
   scrollSizePx = windowHeight * scrollSizePercent;
   scroll.style.height = `${scrollSizePx}px`;
+  // Readjust scroll position
   moveScroll(scrollPosPx);
-  adjustContent();
 };
 resizeListener();
 
@@ -49,12 +47,12 @@ const dragStart = e => {
 };
 
 const dragging = e => {
-  moveScroll(e.clientY);
-  adjustContent();
-  scrollPosPx = e.clientY;
+  const newScrollPosPx = e.clientY - scrollDragOffsetPx;
+  moveScroll(newScrollPosPx);
 };
 
 const dragEnd = () => {
+  scrollDragOffsetPx = 0;
   document.removeEventListener("mousemove", dragging);
 };
 
