@@ -34,7 +34,8 @@ const moveScroll = newScrollPosPx => {
 const resizeListener = () => {
   contentHeight = content.getBoundingClientRect().height;
   windowHeight = window.innerHeight;
-  scrollSizePercent = 1 / (contentHeight / windowHeight);
+  // Scroll size cannot be more than 1
+  scrollSizePercent = Math.min(1, 1 / (contentHeight / windowHeight));
   scrollSizePx = windowHeight * scrollSizePercent;
   scroll.style.height = `${scrollSizePx}px`;
   // Readjust scroll position
