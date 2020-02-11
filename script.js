@@ -61,7 +61,7 @@ resizeListener();
 window.addEventListener("resize", resizeListener);
 
 const dragStart = e => {
-  scrollDragOffsetPx = e.layerY;
+  dragOffsetPx = e.clientY - posPx;
   document.addEventListener("mousemove", dragging);
   document.addEventListener("mouseup", dragEnd, { once: true });
 };
