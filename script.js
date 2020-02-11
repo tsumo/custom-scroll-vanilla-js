@@ -71,21 +71,21 @@ const wheelListener = e => {
 document.addEventListener("wheel", wheelListener);
 
 const keydownListener = e => {
-  let newScrollPosPx;
+  let newScrollPosPx = scrollPosPx;
   switch (event.key) {
     case "Up":
     case "ArrowUp":
-      newScrollPosPx = scrollPosPx - arrowKeyScrollStep;
+      newScrollPosPx -= arrowKeyScrollStep;
       break;
     case "Down":
     case "ArrowDown":
-      newScrollPosPx = scrollPosPx + arrowKeyScrollStep;
+      newScrollPosPx += arrowKeyScrollStep;
       break;
     case "PageUp":
-      newScrollPosPx = scrollPosPx - scrollSizePx * pageKeyScrollCoef;
+      newScrollPosPx -= scrollSizePx * pageKeyScrollCoef;
       break;
     case "PageDown":
-      newScrollPosPx = scrollPosPx + scrollSizePx * pageKeyScrollCoef;
+      newScrollPosPx += scrollSizePx * pageKeyScrollCoef;
       break;
   }
   moveScroll(newScrollPosPx);
