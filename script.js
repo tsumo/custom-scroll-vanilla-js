@@ -15,6 +15,9 @@ let sizePx = 0;
 let posPercent = 0;
 let posPx = 0;
 
+let currentContentOffset = 0;
+let targetContentOffset = 0;
+
 let dragOffsetPx = 0;
 
 let wheelScrollStep = 25;
@@ -29,22 +32,40 @@ const updateInfoTable = () => {
   <tr><td>sizePx</td><td>${sizePx}</td></tr>
   <tr><td>posPercent</td><td>${posPercent}</td></tr>
   <tr><td>posPx</td><td>${posPx}</td></tr>
-  <tr><td>dragOffsetPx</td><td>${dragOffsetPx}</td></tr>
+  <tr><td>currentContentOffset</td><td>${currentContentOffset}</td></tr>
+  <tr><td>targetContentOffset</td><td>${targetContentOffset}</td></tr>
   `;
 };
-setInterval(updateInfoTable, 100);
 
-const clampScrollPos = pos => Math.min(windowHeight - sizePx, Math.max(0, pos));
+const lerp = (v0, v1, t) => {
+  return v0 * (1 - t) + v1 * t;
+};
 
-const moveScroll = newPosPx => {
+const clampScrollPos = (pos) =>
+  Math.min(windowHeight - sizePx, Math.max(0, pos));
+
+const moveScroll = (newPosPx) => {
   const clampedPosPx = clampScrollPos(newPosPx);
   posPercent = clampedPosPx / (windowHeight - sizePx);
   scroll.style.top = `${clampedPosPx}px`;
   posPx = clampedPosPx;
   // Adjust content
-  const contentOffset = posPercent * (contentHeight - windowHeight);
-  content.style.transform = `translateY(-${contentOffset}px)`;
+  targetContentOffset = (posPercent * (contentHeight - windowHeight)).toFixed(
+    2
+  );
 };
+
+const updateContentOffset = () => {
+  currentContentOffset = lerp(
+    currentContentOffset,
+    targetContentOffset,
+    0.1
+  ).toFixed(2);
+  content.style.transform = `translateY(-${currentContentOffset}px)`;
+  updateInfoTable();
+  window.requestAnimationFrame(updateContentOffset);
+};
+updateContentOffset();
 
 const resizeListener = () => {
   contentHeight = content.getBoundingClientRect().height;
@@ -60,13 +81,13 @@ resizeListener();
 
 window.addEventListener("resize", resizeListener);
 
-const dragStart = e => {
+const dragStart = (e) => {
   dragOffsetPx = e.clientY - posPx;
   document.addEventListener("mousemove", dragging);
   document.addEventListener("mouseup", dragEnd, { once: true });
 };
 
-const dragging = e => {
+const dragging = (e) => {
   const newPosPx = e.clientY - dragOffsetPx;
   moveScroll(newPosPx);
 };
@@ -78,7 +99,7 @@ const dragEnd = () => {
 
 scroll.addEventListener("mousedown", dragStart);
 
-const wheelListener = e => {
+const wheelListener = (e) => {
   const direction = Math.sign(e.deltaY);
   const newPosPx = posPx + direction * wheelScrollStep;
   moveScroll(newPosPx);
@@ -86,7 +107,7 @@ const wheelListener = e => {
 
 document.addEventListener("wheel", wheelListener);
 
-const keydownListener = e => {
+const keydownListener = (e) => {
   let newPosPx = posPx;
   switch (e.key) {
     case "Up":

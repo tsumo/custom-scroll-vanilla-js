@@ -33,4 +33,5 @@ a {
   position: fixed;
   background-color: darkgreen;
   width: 10px;
+  cursor: grab;
 }
